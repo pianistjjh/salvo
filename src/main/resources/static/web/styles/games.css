@@ -1,0 +1,28 @@
+#app {
+	width: 100%;
+	height: auto;
+	overflow: hidden;
+
+}
+
+#leaderBoard {
+
+	float: left;
+	height: auto;
+}
+
+table,
+td,
+th {
+	border: 1px solid black;
+	width: auto;
+	padding: 10px;
+	text-align: center;
+}
+
+
+table {
+	border-collapse: collapse;
+
+	margin: 0 auto;
+}

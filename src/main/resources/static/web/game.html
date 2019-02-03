@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<title> Ship Locations! </title>
+	<link rel="stylesheet" href="styles/game.css">
+
+</head>
+
+<body>
+	<div id="app">
+	<div class="logoutWrap">
+			<form id="logout-form">
+				<button id="logout-btn" v-on:click="logout">Log out!</button>
+			</form>
+		</div>
+
+		<div class="gameInfo">
+			<div v-for="player in players">
+				<span v-if="player.id == gamePlayerId">{{player.player.username}} (You) </span>
+				<span v-else>{{player.player.username}} (Other Player) </span>
+			</div>
+		</div>
+		<div class="grid-container">
+			<div class="tableWrap">
+			<h1>Ship Locations</h1>
+				<table class="player">
+					<tr>
+						<th></th>
+						<th v-for="column in columns">{{column}}</th>
+					</tr>
+					<tr v-for="row in rows">
+						<th>{{row}}</th>
+						<td v-for="item in 10" :id="row+item"></td>
+					</tr>
+				</table>
+			</div>
+			<div class="tableWrap">
+			<h1>Salvo Hits</h1>
+				<table class="otherPlayer">
+					<tr>
+						<th></th>
+						<th v-for="column in columns">{{column}}</th>
+					</tr>
+					<tr v-for="row in rows">
+						<th>{{row}}</th>
+						<td v-for="item in 10" :id="'salvo'+row+item"></td>
+					</tr>
+				</table>
+			</div>
+
+		</div>
+	</div>
+
+	<script src="https://cdn.jsdelivr.net/npm/vue"></script>
+	<script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous"></script>
+	<script src="./scripts/game.js"></script>
+</body>
+
+</html>

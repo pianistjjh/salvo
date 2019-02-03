@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<title> Salvo! </title>
+	<link rel="stylesheet" href="./styles/games.css">
+</head>
+
+<body>
+	<div id="app">
+	<div  v-if="loggedIn == true">Welcome, {{thisPlayer.username}}!</div>
+		<div class="logInOutWrap">
+			<div class="loginWrap" v-if="!thisPlayer">
+				<div id="login-form">
+					<label>User Name: <input type="email" name="userName" v-model="typedUserName" required></label>
+					<label>Password: <input type="text" name="password" v-model="typedPassword" required></label>
+					<p v-for="error in errors" v-if="errors.length">{{ error }}</p>
+					<p>
+						<button type="submit" value="Login" id="login-btn" v-on:click="login">Log in</button>
+					</p>
+					<button type="submit" id="signup-btn" v-on:click="checkForm">Sign up!</button>
+				</div>
+			</div>
+			<div class="logoutWrap" v-if="loggedIn == true">
+				<div id="logout-form">
+					<button type="submit" id="logout-btn" v-on:click="logout">Log out!</button>
+				</div>
+			</div>
+		</div>
+		<ul id="gameList" v-for="game in allGame">
+			<li>Game Id: {{game.id}}, Created on: {{game.date}},
+				<p v-for="player in game.gamePlayers">
+					<span>{{player.player.username}}</span>
+					<a v-if="thisPlayer.username == player.player.username" :href=`game.html?gp=${player.id}`>Go Back to Game</a>
+					<button id="joinBtn" v-if="game.gamePlayers.length == 1 && player.player.username != thisPlayer.username && loggedIn == true" v-on:click="joinGame" :data-game=`${game.id}`>
+						Join the Game {{game.id}}
+					</button>
+				</p>
+			</li>
+		</ul>
+		<div id="createGame" v-if="loggedIn == true">
+			<button id="createGame-btn" v-on:click="createGame">Create Game</button>
+		</div>
+		<div id="leaderBoard">
+			<table>
+				<tr>
+					<th>Name</th>
+					<th>Total</th>
+					<th>Won</th>
+					<th>Lost</th>
+					<th>Tied</th>
+				</tr>
+				<tr v-for="player in players">
+					<td>{{player.username}}</td>
+					<td>{{player.totalScore}}</td>
+					<td>{{player.totalWin}}</td>
+					<td>{{player.totalLoss}}</td>
+					<td>{{player.totalTie}}</td>
+				</tr>
+			</table>
+		</div>
+	</div>
+	<script src="https://cdn.jsdelivr.net/npm/vue"></script>
+	<script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous"></script>
+	<script src="./scripts/games.js"></script>
+</body>
+
+</html>
