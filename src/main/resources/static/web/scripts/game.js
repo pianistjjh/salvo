@@ -1,6 +1,7 @@
 var app = new Vue({
 	el: "#app",
 	data: {
+		allData: [],
 		gamePlayerId: [],
 		columns: [],
 		rows: [],
@@ -9,8 +10,9 @@ var app = new Vue({
 		players: [],
 		salvoes: [],
 		opponentSalvoes: [],
-		allData: [],
-
+		shipTypes: ["Aircraft Carrier", "Battleship", "Submarine", "Destroyer", "Patrol Boat"],
+		placedShips: [],
+		nonPlacedShips: [],
 	},
 	methods: {
 		getData: function () {
@@ -29,11 +31,13 @@ var app = new Vue({
 					app.gamePlayerId = json.gameplayer_id;
 					app.salvoes = json.salvoes;
 					app.opponentSalvoes = json.opponent_salvoes;
-
 					app.addShip();
 					app.addSalvo();
 					app.addOpp_Salvo();
-					console.log(app.salvoes);
+					//					console.log(app.salvoes);
+					app.listShips();
+
+
 
 				}).catch(function (error) {
 					console.log(error)
@@ -122,10 +126,10 @@ var app = new Vue({
 						type: type,
 						locations: locations
 									}]),
-//															body: JSON.stringify([{
-//																type: "Destroyer",
-//																locations: ["A1","A2","A3"]
-//																		}]),
+					//															body: JSON.stringify([{
+					//																type: "Destroyer",
+					//																locations: ["A1","A2","A3"]
+					//																		}]),
 
 				}).then(r => {
 					console.log(r);
@@ -135,6 +139,32 @@ var app = new Vue({
 				})
 				.catch(e => console.log(e))
 		},
+		listShips: function () {
+			var newLi = [];
+			for (var i = 0; i < app.ships.length; i++) {
+				app.placedShips.push(app.ships[i].type);
+			}
+			app.nonPlacedShips = app.shipTypes.filter(function (val) {
+				return app.placedShips.indexOf(val) == -1;
+			});
+		},
+		draggable: function (e) {
+
+			var shipId = e.target.id;
+
+			$("#" + shipId).draggable({
+				snap: ".player",
+				containment: "#tableWrap",
+				scroll: false
+			});
+
+		},
+		rotate: function (e) {
+			var shipId = e.target.id;
+			$("#" + shipId).toggleClass("rotate");
+
+		}
+
 	},
 	created() {
 		this.createGrid();

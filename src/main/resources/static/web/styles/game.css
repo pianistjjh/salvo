@@ -2,7 +2,7 @@
 	width: 100%;
 	height: auto;
 	overflow: hidden;
-	
+
 }
 
 .gameInfo {
@@ -11,24 +11,27 @@
 	margin: 20px auto;
 }
 
-.gameInfo > div  {
+.gameInfo > div {
 	width: 50%;
 	height: 40px;
-	
+
 	float: left;
 
 }
+
 .gameInfo > div > span {
 	display: inline-block;
 	width: 100%;
 	height: 100%;
 	text-align: center;
 }
+
 .tableWrap {
-	width: 50%;
-	float:left;
+	width: auto;
+	float: left;
 	height: auto;
 }
+
 table,
 td,
 th {
@@ -36,40 +39,104 @@ th {
 }
 
 .grid-container {
-	max-width: 80%;
+	width: auto;
 	height: auto;
 	margin: 50px auto;
 	overflow: hidden;
-	
+
 }
+
 table {
 	border-collapse: collapse;
 
-	margin: 0 auto; 
+	margin: 0 auto;
 }
 
 th,
 td {
 
-	height: 40px;
-	width: 40px;
+	height: 45px;
+	width: 45px;
 	margin: 0;
 	padding: 0;
 }
+
 table span {
 	display: inline-block;
 	width: 100%;
 	text-align: center;
 }
+
 .ship {
 	background: yellow;
 }
+
 .salvo {
 	background: pink;
 }
+
 .opp_salvo {
 	background: lightblue;
 }
+
 .opp_salvo_hit {
 	background: red;
+}
+
+#shipInfo {
+	width: 300px;
+	height: auto;
+
+}
+
+#shipInfo ul {
+	width: 100%;
+	height: auto;
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+#shipInfo ul > li {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	height: 40.8px;
+	margin:10px 0;
+	text-indent: -9999px;
+	background-size: 100% 100%;
+	
+
+}
+
+#ship_Pat {
+	background: url(imgs/patrol.png) no-repeat left;
+	width: 90px;
+
+}
+
+#ship_Des {
+	background: url(imgs/destroyer.png) no-repeat left;
+	width: 135px;
+
+}
+
+#ship_Air {
+	background: url(imgs/carrier.png) no-repeat left;
+	width: 225px;
+
+}
+
+#ship_Bat {
+	background: url(imgs/battleship.png) no-repeat left;
+	width: 180px;
+}
+
+#ship_Sub {
+	background: url(imgs/submarine.png) no-repeat left;
+	width: 135px;
+}
+
+.rotate{
+	 transform: rotate(90deg);
 }

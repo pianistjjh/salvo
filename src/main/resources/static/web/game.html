@@ -7,12 +7,13 @@
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
 	<title> Ship Locations! </title>
 	<link rel="stylesheet" href="styles/game.css">
+	<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 
 </head>
 
 <body>
 	<div id="app">
-	<div class="logoutWrap">
+		<div class="logoutWrap">
 			<form id="logout-form">
 				<button id="logout-btn" v-on:click="logout">Log out!</button>
 			</form>
@@ -24,9 +25,22 @@
 				<span v-else>{{player.player.username}} (Other Player) </span>
 			</div>
 		</div>
+		<div id="shipInfo" >
+			<div>placed ships:
+				<ul>
+					<li v-for="placedShip in placedShips" :id="'ship_' + placedShip.slice(0,3)"  v-on:mousedown="draggable"  class="draggable" v-on:dblclick= "rotate">{{placedShip}}</li>
+				</ul>
+			</div>
+			<div>Availabe Ships:
+				<ul>
+					<li v-for="ship in nonPlacedShips" :id="'ship_' + ship.slice(0,3)"  v-on:mousedown="draggable"  class="draggable"  v-on:dblclick= "rotate">{{ship}}</li>
+				</ul>
+				
+			</div>
+		</div>
 		<div class="grid-container">
 			<div class="tableWrap">
-			<h1>Ship Locations</h1>
+				<h1>Ship Locations</h1>
 				<table class="player">
 					<tr>
 						<th></th>
@@ -39,7 +53,7 @@
 				</table>
 			</div>
 			<div class="tableWrap">
-			<h1>Salvo Hits</h1>
+				<h1>Salvo Hits</h1>
 				<table class="otherPlayer">
 					<tr>
 						<th></th>
@@ -57,6 +71,7 @@
 
 	<script src="https://cdn.jsdelivr.net/npm/vue"></script>
 	<script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous"></script>
+	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 	<script src="./scripts/game.js"></script>
 </body>
 
