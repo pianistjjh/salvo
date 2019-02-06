@@ -84,25 +84,25 @@ table span {
 }
 
 #shipInfo {
-	width: 300px;
+	width: auto;
 	height: auto;
 
 }
 
-#shipInfo ul {
-	width: 100%;
+#shipInfo .draggable-ship-wrap {
+	width: auto;
 	height: auto;
 	list-style: none;
 	margin: 0;
 	padding: 0;
 }
 
-#shipInfo ul > li {
+#shipInfo .draggable-ship-wrap > .draggable-ship {
 	list-style: none;
 	margin: 0;
 	padding: 0;
 	height: 40.8px;
-	margin:10px 0;
+/*	margin:10px 0;*/
 	text-indent: -9999px;
 	background-size: 100% 100%;
 	
