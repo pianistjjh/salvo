@@ -28,7 +28,13 @@ h1 {
 
 
 }
-
+.wrap{
+	width: 90%;
+	height: auto;
+	overflow: hidden;
+	margin: 0 auto;
+	
+}
 .bg {
 	width: 100%;
 	height: 100%;
@@ -41,45 +47,180 @@ h1 {
 	z-index: -1;
 }
 
-.gameInfo {
 
-	max-width: 80%;
-	height: 50px;
+
+
+.topNav {
+	width: 100%;
+	height: 140px;
 	margin: 20px auto;
+	
+
+	box-sizing: border-box;
+	
+		position:relative;
+	
+}
+.topNav .topNav-bg-opacity {
+	position:absolute;
+	top:0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	z-index:-1;
+	background: white;
+		opacity: 0.30;
+	border-radius: 20px;
+	
 }
 
+.topNav .topNav-top {
+	width: 100%;
+	height: 90px;
+
+
+}
+
+.topNav .topNav-top .topNav_left {
+	width: calc(100% - 140px);
+	height: 100%;
+	
+	float: left;
+}
+.topNav .topNav-top .topNav_left span {
+	display: inline-block;
+	width: 100%;
+	height: 100%;
+	text-indent:30px;
+	font-size: 50px;
+	line-height: 90px;
+	
+	font-family: "Comic Sans MS", cursive, sans-serif;
+font-size: 45px;
+letter-spacing: -1.4px;
+word-spacing: 2px;
+
+font-weight: 700;
+
+font-style: italic;
+font-variant: small-caps;
+text-transform: capitalize;
+	
+	
+	text-shadow: 0 -1px 0 #fff, 0 1px 0 #2e2e2e, 0 2px 0 #2c2c2c, 0 3px 0 #2a2a2a, 0 4px 0 #282828, 0 5px 0 #262626, 0 6px 0 #242424, 0 7px 0 #222, 0 8px 0 #202020, 0 9px 0 #1e1e1e, 0 10px 0 #1c1c1c, 0 11px 0 #1a1a1a, 0 12px 0 #181818, 0 13px 0 #161616, 0 14px 0 #141414, 0 15px 0 #121212, 0 22px 30px rgba(0,0,0,0.9), 2px 2px 2px rgba(139,55,164,0), 2px 2px 2px rgba(139,55,164,0);
+color: #e0dfdc;
+
+}
+
+
+.topNav .topNav-top .topNav_right {
+	width: 140px;
+	height: 100%;
+	float: right;
+	
+
+}
+
+.topNav .topNav-top .topNav_right .logoutBtn {
+	
+	width:100px;
+	height: 40px;
+	margin: 25px 20px;
+	float: right;
+	text-align: center;
+	line-height:40px;
+	
+	-moz-box-shadow:inset 0px 0px 0px 0px #bbdaf7;
+	-webkit-box-shadow:inset 0px 0px 0px 0px #bbdaf7;
+	box-shadow:inset 0px 0px 0px 0px #bbdaf7;
+	background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #79bbff), color-stop(1, #378de5));
+	background:-moz-linear-gradient(top, #79bbff 5%, #378de5 100%);
+	background:-webkit-linear-gradient(top, #79bbff 5%, #378de5 100%);
+	background:-o-linear-gradient(top, #79bbff 5%, #378de5 100%);
+	background:-ms-linear-gradient(top, #79bbff 5%, #378de5 100%);
+	background:linear-gradient(to bottom, #79bbff 5%, #378de5 100%);
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#79bbff', endColorstr='#378de5',GradientType=0);
+	background-color:#79bbff;
+	-moz-border-radius:13px;
+	-webkit-border-radius:13px;
+	border-radius:13px;
+	border:1px solid #84bbf3;
+	display:inline-block;
+	cursor:pointer;
+	color:#ffffff;
+	font-family:Arial;
+	font-size:15px;
+	font-weight:bold;
+	text-decoration:none;
+	text-shadow:0px 1px 0px #528ecc;
+}
+.logoutBtn:active {
+	position:relative;
+	top:1px;
+}
+.topNav .topNav-Btm {
+	width: 100%;
+	height: 50px;
+	border-radius: 0 0 20px 20px ;
+	background-color: midnightblue;
+}
+.gameInfo {
+
+	width: 100%;
+	padding: 0 10%;
+	height: 100%;
+	box-sizing: border-box;
+}
 .gameInfo > div {
 	width: 50%;
-	height: 40px;
-
+	height: 100%;
 	float: left;
 
 }
-
 .gameInfo > div > span {
 	display: inline-block;
 	width: 100%;
 	height: 100%;
 	text-align: center;
+	line-height: 50px;
+	color: white;
 }
-
 .ship {
 	background: yellow;
 }
-
 .salvo {
 	background: pink;
 }
-
 .opp_salvo {
 	background: lightblue;
 }
-
 .opp_salvo_hit {
 	background: red;
 }
 
-#shipInfo {
+.section {
+	width: 100%;
+	height: auto;
+	margin-top: 50px;
+	position: relative;
+	box-sizing:border-box;
+	
+	padding-bottom: 50px;
+	overflow: hidden;
+	
+}
+.section .section_bg {
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	top:0;
+	bottom: 0;
+	background: white;
+	opacity: 0.3;
+	border-radius: 30px;
+	z-index: -1;
+}
+.section #shipInfo {
 	width: 230px;
 	margin-right: 10px;
 	height: auto;
@@ -87,7 +228,7 @@ h1 {
 
 }
 
-#shipInfo .draggable-ship-wrap {
+.section #shipInfo .draggable-ship-wrap {
 	width: auto;
 	height: auto;
 	list-style: none;
@@ -95,15 +236,13 @@ h1 {
 	padding: 0;
 }
 
-#shipInfo .draggable-ship-wrap > .draggable-ship {
+.section #shipInfo .draggable-ship-wrap > .draggable-ship {
 	list-style: none;
 	margin: 0;
-	padding: 2px;
-	height: 44.8px;
-
+	height: 42px;
 	text-indent: -9999px;
 	background-size: 90% 90%;
-	background-position: center;
+	background-position: center center;
 	box-sizing: border-box;
 	z-index: 10;
 	
@@ -114,42 +253,43 @@ h1 {
 
 #ship_Pat {
 	background: url(imgs/patrol1.png) no-repeat left;
-	width: 90px;
-	padding: 20px;
+	width: 87px;
+
 
 }
 
 #ship_Des {
 	background: url(imgs/destroyer1.png) no-repeat left;
-	width: 135px;
+	width: 132px;
 
 }
 
 #ship_Air {
 	background: url(imgs/carrier1.png) no-repeat left;
-	width: 225px;
+	width: 222px;
 
 }
 
 #ship_Bat {
 	background: url(imgs/battleship1.png) no-repeat left;
-	width: 180px;
-	padding: 40px;
+	width: 187px;
+
 }
 
 #ship_Sub {
 	background: url(imgs/submarine1.png) no-repeat left;
-	width: 135px;
+	width: 132px;
 }
 
 .rotate {
 	transform: rotate(90deg);
 }
 
-.grid-container {
+.section .grid-container {
 	float: left;
 	text-align: center;
-	width: 1200px;
+	width: calc(100% - 250px);
+	float: right;
 	height: auto;
 	overflow: hidden;
 	color: mintcream;
@@ -165,29 +305,31 @@ h1 {
 	float: left;
 	height: auto;
 	position: relative;
+	margin-left: 30px;
 }
+
 
 .tableWrap:first-child {
 	margin-right: 30px;
 }
+.tableWrap h1 {
+	margin-bottom:20px;	
+}
 .table_bg {
 	z-index: -1;
-	width: 500px;
-	height: 500px;
+	width: calc(100% - 45px);
+	height: calc(100% - 108px);
 	position: absolute;
 	bottom: 0;
-	left: 0;
+	right: 0;
 
 	background-color: mintcream;
 	opacity: 0.2;
 }
 
 table {
-/*
-	width: 500px;
-	height: 500px;
-*/
 
+min-width: 496px;
 }
 
 table,

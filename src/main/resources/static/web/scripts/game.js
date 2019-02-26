@@ -39,6 +39,8 @@ var app = new Vue({
 			}
 		],
 		currentDraggingShip: [],
+		//		isActive: false,
+
 
 	},
 	methods: {
@@ -63,6 +65,8 @@ var app = new Vue({
 					app.addSalvo();
 					app.addOpp_Salvo();
 					app.listShips();
+
+					//				app.styling();
 
 
 
@@ -186,62 +190,127 @@ var app = new Vue({
 			console.log(newLi)
 		},
 		draggable: function (e) {
+			
 			var shipId = e.target.id;
 			$("#" + shipId).draggable({
-				revert: "invalid",
+				start: function (e, ui) {
+					
+					app.currentDraggingShip = $(this).html();
+				},
+				revert:
+					//				"invalid",
+					function (e) {
+
+
+						//						if(!$(this).hasClass("rotate")){
+						//							
+						//						}
+
+						var offsetShipLeft = $(this).offset().left;
+						var offsetShipRight = offsetShipLeft + $(this).width();
+						var offsetShipTop = $(this).offset().top;
+						var offsetShipBtm = offsetShipTop + $(this).height();
+
+						var tbody = $(".tableWrap:first-child tbody");
+
+						var offsetGridLeft = tbody.offset().left + $("tbody tr:first-child th:first-child").width();
+						var offsetGridRight = tbody.offset().left + tbody.width();
+						var offsetGridTop = tbody.offset().top + $("tbody tr:first-child").height();
+						var offsetGridBtm = tbody.offset().top + tbody.height();
+
+						if (!(offsetShipLeft >= offsetGridLeft && offsetShipRight <= offsetGridRight && offsetShipTop >= offsetGridTop && offsetShipBtm <= offsetGridBtm)) {
+
+							return true;
+						} else {
+							return false;
+						}
+
+					},
 				snap: ".ui-droppable",
 				snapMode: "inner",
-				snapTolerance: 20,
-				start: function (e, ui) {
-					app.currentDraggingShip = $(this).html();
-				}
+				snapTolerance: 30,
+
+
 			});
 
 			$('#droppable td[id]').droppable({
-					drop: function (e, ui) {
-						console.log("hre", e.target.id)
-						var theClass = $(this).attr('id');
-						console.log($(this))
-						var row = theClass.slice(0, 1);
-						//					console.log(theClass);
-						if (theClass.length == 2) {
-							var column = theClass.slice(1, 2);
-							var parseColumn = parseInt(column);
-						} else {
-							var column = theClass.slice(1, 3);
-							var parseColumn = parseInt(column);
-						}
-						for (var i = 0; i < app.shipList.length; i++) {
-							if (app.currentDraggingShip == app.shipList[i].type) {
-								var shipLength = app.shipList[i].length;
+				drop: function (e, ui) {
+					//					console.log("here", e.target.id)
+					var theClass = $(this).attr('id');
+					var row = theClass.slice(0, 1);
+
+					if (theClass.length == 2) {
+						var column = theClass.slice(1, 2);
+					} else {
+						var column = theClass.slice(1, 3);
+					}
+					var parseColumn = parseInt(column);
+
+					for (var i = 0; i < app.shipList.length; i++) {
+						if (app.currentDraggingShip == app.shipList[i].type) {
+							var shipLength = app.shipList[i].length;
+							for (var j = 0; j < shipLength; j++) {
 								if (shipLength == 2) {
-									var shipPlace = row + parseColumn;
-									var shipPlace1 = row + (parseColumn + 1);
-									console.log(shipPlace, shipPlace1);
+									var shipPlace = row + (parseColumn + j);
+								} else if (shipLength == 4) {
+									var shipPlace = row + (parseColumn - j + 2);
 								} else if (shipLength == 5) {
-									for (var j = 0; j < shipLength; j++) {
-										var shipPlace = row + (parseColumn - j + 2);
-										console.log(shipPlace);
-									}
+									var shipPlace = row + (parseColumn - j + 2);
 								} else {
-									for (var j = 0; j < shipLength; j++) {
 									var shipPlace = row + (parseColumn - j + 1);
-									console.log(shipPlace);
-									}
 								}
+								console.log(shipPlace);
 							}
 						}
 					}
+
+				}
 			});
+		},
+		rotate: function (e) {
+
+
+
+			var shipId = e.target.id;
+			$("#" + shipId).toggleClass("rotate");
+
+
+			//			app.isActive = !app.isActive;
+		},
+		//		styling: function () {
+		//			
+		//		
+		//var sss = $("#ship_Pat");
+		//			console.log(sss.height());
+		//			var height = $(".tableWrap:first-child tbody tr:first-child th:first-child").height();
+		//			console.log(height)
+		//			sss.height(43);
+		//				
+		//			
+		////			var eachGrid = $(".tableWrap:first-child tbody tr:first-child th:first-child");
+		////
+		////			var height = eachGrid.height() - 2;
+		////			parseInt(height);
+		////			var width = eachGrid.width() - 2;
+		////			console.log($(".tableWrap:first-child tbody tr:first-child th:first-child").height())
+		////			$("#shipInfo .draggable-ship-wrap > .draggable-ship").css("height", function(){
+		////				var ddd = $(".tableWrap:first-child tbody tr:first-child th:first-child").height();
+		////				
+		////			 return ddd;
+		////			})
+		//		
+		////		 $("#ship_Pat").css("width", function(){
+		////			 var ddd = $(".tableWrap:first-child tbody tr:first-child th:first-child").width();
+		////			 return 22;
+		////		 })
+		//			console.log(sss.height());
+		//			console.log($("#ship_Pat").height());
+		//		}
 	},
-	rotate: function (e) {
-		var shipId = e.target.id;
-		$("#" + shipId).toggleClass("rotate");
+	created() {
+		this.createGrid();
+		this.getData();
+
 	},
-},
-created() {
-	this.createGrid();
-	this.getData();
-},
 
 })
