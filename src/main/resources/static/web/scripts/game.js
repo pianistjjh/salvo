@@ -10,11 +10,19 @@ var app = new Vue({
 		players: [],
 		salvoes: [],
 		opponentSalvoes: [],
-		//		shipTypes: ["Aircraft Carrier", "Battleship", "Submarine", "Destroyer", "Patrol Boat"],
 		placedShips: [],
 		nonPlacedShips: [],
-		shipLocsToBeSubmitted: [],
 
+		currentDraggingShip: [],
+		allShipLocations: [],
+		//		currentLocation: '',
+		shipTarget: '',
+		cellTarget: '',
+		locationValid: true,
+		overlappingValid: true,
+		restShips: [],
+		selectedShip: [],
+		previusSelectedShip: {},
 		shipList: [
 			{
 				type: "Aircraft Carrier",
@@ -38,9 +46,8 @@ var app = new Vue({
 				length: 2
 			}
 		],
-		currentDraggingShip: [],
-		//		isActive: false,
-
+		object: {},
+		allPositionArray: []
 
 	},
 	methods: {
@@ -65,6 +72,8 @@ var app = new Vue({
 					app.addSalvo();
 					app.addOpp_Salvo();
 					app.listShips();
+
+					//					console.log(app.nonPlacedShips)
 
 					//				app.styling();
 
@@ -182,7 +191,6 @@ var app = new Vue({
 			}
 			for (var i = 0; i < app.shipList.length; i++) {
 				newLi.push(app.shipList[i].type);
-
 				app.nonPlacedShips = newLi.filter(function (val) {
 					return app.placedShips.indexOf(val) == -1;
 				});
@@ -190,123 +198,226 @@ var app = new Vue({
 			console.log(newLi)
 		},
 		draggable: function (e) {
-			
+			var thisShip = e.target;
+			app.shipTarget = thisShip;
 			var shipId = e.target.id;
 			$("#" + shipId).draggable({
 				start: function (e, ui) {
-					
 					app.currentDraggingShip = $(this).html();
+					app.locationValid = true;
+					app.overlappingValid = true;
+
 				},
-				revert:
-					//				"invalid",
-					function (e) {
+				revert: function () {
+					if (!app.locationValid) {
+						app.location();
 
+					}
 
-						//						if(!$(this).hasClass("rotate")){
-						//							
-						//						}
+					return app.locationValid;
 
-						var offsetShipLeft = $(this).offset().left;
-						var offsetShipRight = offsetShipLeft + $(this).width();
-						var offsetShipTop = $(this).offset().top;
-						var offsetShipBtm = offsetShipTop + $(this).height();
-
-						var tbody = $(".tableWrap:first-child tbody");
-
-						var offsetGridLeft = tbody.offset().left + $("tbody tr:first-child th:first-child").width();
-						var offsetGridRight = tbody.offset().left + tbody.width();
-						var offsetGridTop = tbody.offset().top + $("tbody tr:first-child").height();
-						var offsetGridBtm = tbody.offset().top + tbody.height();
-
-						if (!(offsetShipLeft >= offsetGridLeft && offsetShipRight <= offsetGridRight && offsetShipTop >= offsetGridTop && offsetShipBtm <= offsetGridBtm)) {
-
-							return true;
-						} else {
-							return false;
-						}
-
-					},
+				},
 				snap: ".ui-droppable",
 				snapMode: "inner",
 				snapTolerance: 30,
-
-
 			});
 
 			$('#droppable td[id]').droppable({
-				drop: function (e, ui) {
-					//					console.log("here", e.target.id)
-					var theClass = $(this).attr('id');
-					var row = theClass.slice(0, 1);
+				drop: function (e) {
 
-					if (theClass.length == 2) {
-						var column = theClass.slice(1, 2);
-					} else {
-						var column = theClass.slice(1, 3);
-					}
-					var parseColumn = parseInt(column);
+					var cellId = e.target.id;
+					app.cellTarget = cellId;
+					
+//					if (!app.locationValid) {
+						app.location();
+//					}
 
-					for (var i = 0; i < app.shipList.length; i++) {
-						if (app.currentDraggingShip == app.shipList[i].type) {
-							var shipLength = app.shipList[i].length;
-							for (var j = 0; j < shipLength; j++) {
-								if (shipLength == 2) {
-									var shipPlace = row + (parseColumn + j);
-								} else if (shipLength == 4) {
-									var shipPlace = row + (parseColumn - j + 2);
-								} else if (shipLength == 5) {
-									var shipPlace = row + (parseColumn - j + 2);
-								} else {
-									var shipPlace = row + (parseColumn - j + 1);
-								}
-								console.log(shipPlace);
-							}
-						}
-					}
+					app.range();
 
 				}
 			});
 		},
 		rotate: function (e) {
+			var thisShip = app.shipTarget;
+			var shipId = thisShip.id;
+			var offsetShipLeft = $(thisShip).offset().left;
+			var offsetShipRight = offsetShipLeft + $(thisShip).width();
+			var offsetShipRightVert = offsetShipLeft + $(thisShip).height();
+			var offsetShipTop = $(thisShip).offset().top;
+			var offsetShipBtm = offsetShipTop + $(thisShip).height();
+			var offsetShipBtmVert = offsetShipTop + $(thisShip).width();
 
+			var tbody = $(".tableWrap:first-child tbody");
 
+			var offsetGridLeft = tbody.offset().left + $("tbody tr:first-child th:first-child").width();
+			var offsetGridRight = tbody.offset().left + tbody.width();
+			var offsetGridTop = tbody.offset().top + $("tbody tr:first-child").height();
+			var offsetGridBtm = tbody.offset().top + tbody.height();
 
-			var shipId = e.target.id;
-			$("#" + shipId).toggleClass("rotate");
-
-
-			//			app.isActive = !app.isActive;
+			if ($("#" + shipId).hasClass("rotate")) {
+				if (offsetShipLeft >= offsetGridLeft && offsetShipRight <= offsetGridRight && offsetShipTop >= offsetGridTop && offsetShipBtm <= offsetGridBtm) {
+					$("#" + shipId).removeClass("rotate");
+				} else {
+					console.log("unable to rotate")
+				}
+			} else {
+				if (offsetShipLeft >= offsetGridLeft && offsetShipRightVert <= offsetGridRight && offsetShipTop >= offsetGridTop && offsetShipBtmVert <= offsetGridBtm) {
+					$("#" + shipId).addClass("rotate");
+				} else {
+					console.log("unable to rotate")
+				}
+			}
+			app.range();
+			app.location();
 		},
-		//		styling: function () {
-		//			
-		//		
-		//var sss = $("#ship_Pat");
-		//			console.log(sss.height());
-		//			var height = $(".tableWrap:first-child tbody tr:first-child th:first-child").height();
-		//			console.log(height)
-		//			sss.height(43);
-		//				
-		//			
-		////			var eachGrid = $(".tableWrap:first-child tbody tr:first-child th:first-child");
-		////
-		////			var height = eachGrid.height() - 2;
-		////			parseInt(height);
-		////			var width = eachGrid.width() - 2;
-		////			console.log($(".tableWrap:first-child tbody tr:first-child th:first-child").height())
-		////			$("#shipInfo .draggable-ship-wrap > .draggable-ship").css("height", function(){
-		////				var ddd = $(".tableWrap:first-child tbody tr:first-child th:first-child").height();
-		////				
-		////			 return ddd;
-		////			})
-		//		
-		////		 $("#ship_Pat").css("width", function(){
-		////			 var ddd = $(".tableWrap:first-child tbody tr:first-child th:first-child").width();
-		////			 return 22;
-		////		 })
-		//			console.log(sss.height());
-		//			console.log($("#ship_Pat").height());
-		//		}
+		range: function () {
+			app.locationValid = true;
+			console.log(app.locationValid)
+			var thisShip = app.shipTarget;
+			var shipId = thisShip.id;
+			
+			var cellId = app.cellTarget.id;
+			var offsetShipLeft = $(thisShip).offset().left;
+			var offsetShipRight = offsetShipLeft + $(thisShip).width();
+			var offsetShipRightVert = offsetShipLeft + $(thisShip).height();
+			var offsetShipTop = $(thisShip).offset().top;
+			var offsetShipBtm = offsetShipTop + $(thisShip).height();
+			var offsetShipBtmVert = offsetShipTop + $(thisShip).width();
+			var tbody = $(".tableWrap:first-child tbody");
+			var offsetGridLeft = tbody.offset().left + $("tbody tr:first-child th:first-child").width();
+			var offsetGridRight = tbody.offset().left + tbody.width();
+			var offsetGridTop = tbody.offset().top + $("tbody tr:first-child").height();
+			var offsetGridBtm = tbody.offset().top + tbody.height();
+
+			if (!$("#" + shipId).hasClass("rotate")) {
+				if (!(offsetShipLeft >= offsetGridLeft && offsetShipRight <= offsetGridRight && offsetShipTop >= offsetGridTop && offsetShipBtm <= offsetGridBtm)) {
+					app.locationValid = true;
+				} else {
+					app.locationValid = false;
+				}
+			} else {
+				if (!(offsetShipLeft >= offsetGridLeft && offsetShipRightVert <= offsetGridRight && offsetShipTop >= offsetGridTop && offsetShipBtmVert <= offsetGridBtm)) {
+					app.locationValid = true;
+				} else {
+					app.locationValid = false;
+				}
+			}
+		},
+		location: function () {
+			var thisShip = app.shipTarget;
+			var shipId = thisShip.id;
+			var cellId = app.cellTarget;
+			var row = cellId.slice(0, 1);
+			var shipPlace = [];
+
+			if (cellId.length == 2) {
+				var column = cellId.slice(1, 2);
+			} else {
+				var column = cellId.slice(1, 3);
+			}
+			var parseColumn = parseInt(column);
+
+			let readed = false;
+			for (var i = 0; i < app.shipList.length; i++) {
+
+				var shipLength = app.shipList[i].length;
+				var indexRow = app.rows.indexOf(row);
+
+				if (!$("#" + shipId).hasClass("rotate")) {
+					if (app.currentDraggingShip == app.shipList[i].type) {
+						for (var j = 0; j < shipLength; j++) {
+							if (shipLength == 2) {
+								shipPlace.push(row + (parseColumn + j));
+							} else if (shipLength == 5 || shipLength == 4) {
+								shipPlace.push(row + (parseColumn - j + 2));
+							} else {
+								shipPlace.push(row + (parseColumn - j + 1));
+							}
+							if (!app.locationValid) {
+								app.shipList[i].locations = [];
+								app.shipList[i].locations = shipPlace;
+							}
+						}
+						//														console.log(shipPlace)
+																				console.log(app.shipList[i].locations);
+					}
+				} else {
+					if (app.currentDraggingShip == app.shipList[i].type) {
+						for (var j = 0; j < shipLength; j++) {
+							if (shipLength == 2) {
+								shipPlace.push(app.rows[indexRow + j] + parseColumn);
+							} else if (shipLength == 5) {
+								shipPlace.push(app.rows[indexRow + j] + (parseColumn - 2));
+							} else {
+								shipPlace.push(app.rows[indexRow + j] + (parseColumn - 1));
+							}
+							if (!app.locationValid) {
+								app.shipList[i].locations = [];
+								app.shipList[i].locations = shipPlace;
+
+							}
+						}
+																				console.log(app.shipList[i].locations);
+					}
+
+				}
+			}
+			app.isOverlapping();
+
+		},
+		isOverlapping: function () {
+			app.locationValid = true;
+			app.selectedShip = app.shipList.filter(ship => ship.type == app.currentDraggingShip)[0];
+			let object = {};
+			app.restShips = [...app.restShips, ...app.selectedShip.locations]
+			if (!app.object[app.selectedShip.type]) {
+				app.object[app.selectedShip.type] = app.selectedShip.locations;
+
+			} else {
+				app.object[app.selectedShip.type].forEach((el) => {
+					let index = app.restShips.indexOf(el);
+					app.restShips.splice(index, 1);
+				})
+				app.object[app.selectedShip.type] = app.selectedShip.locations;
+			}
+			
+	
+
+			
+			let uniques = [];
+			let duplicates = [];
+			
+			app.restShips.forEach(el => {
+				if (!uniques.includes(el))
+					uniques.push(el)
+				else
+					duplicates.push(el)
+			});
+	
+			
+			let arrayToRemove = [...duplicates];
+			arrayToRemove.forEach(el => {
+				let index = app.restShips.indexOf(el);
+				app.restShips.splice(index,1)
+			})
+
+			if (duplicates.length == 0) {
+				app.locationValid = false;
+				let index = app.shipList.indexOf(app.selectedShip)
+				app.shipList[index].locations = app.selectedShip.locations;
+
+
+			} else {
+				console.log(true, "invalid position")
+				app.locationValid = true;
+				let index = app.shipList.indexOf(app.selectedShip)
+				if(app.shipList[index].locations.length > 0)
+				 	app.restShips = [...app.restShips, ...app.shipList[index].locations];
+			}
+
+		}
 	},
+
 	created() {
 		this.createGrid();
 		this.getData();

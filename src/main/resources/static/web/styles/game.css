@@ -272,7 +272,8 @@ color: #e0dfdc;
 
 #ship_Bat {
 	background: url(imgs/battleship1.png) no-repeat left;
-	width: 187px;
+	width: 177px;
+	margin-left: 2px;
 
 }
 
@@ -283,6 +284,7 @@ color: #e0dfdc;
 
 .rotate {
 	transform: rotate(90deg);
+	transform-origin: 23px;
 }
 
 .section .grid-container {

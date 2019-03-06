@@ -38,21 +38,27 @@
 
 
 			<div class="section">
-			<div class="section_bg"></div>
+				<div class="section_bg"></div>
 				<div id="shipInfo">
 					<div>placed ships:
 						<div class="draggable-ship-wrap">
-							<div class="draggable draggable-ship" v-for="placedShip in placedShips" :id="'ship_' + placedShip.slice(0,3)" v-on:mousedown="draggable" v-on:dblclick="rotate">{{placedShip}}</div>
+							<div class="draggable draggable-ship" v-for="placedShip in placedShips" :id="'ship_' + placedShip.slice(0,3)" data-currentLocation: v-on:mouseover="draggable" v-on:dblclick="rotate">{{placedShip}}</div>
 						</div>
 					</div>
+					<!--
 					<div>Available Ships:
-						<div class="draggable draggable-ship-wrap">
-							<div class="draggable-ship" v-for="ship in nonPlacedShips" :id="'ship_' + ship.slice(0,3)" v-on:mouseover="draggable" v-on:dblclick="rotate">{{ship}}</div>
+						<div class="draggable draggable-ship-wrap" data-field="field_id">
+<div class="draggable-ship" v-for="(ship, index) of nonPlacedShips" :id="'ship_' + ship.slice(0,3)" v-on:mouseover="draggable" v-on:dblclick="rotate(index)" v-bind:class="{rotate: index == field_id}" v-bind:data-value = "index">{{ship}}</div>
 						</div>
 					</div>
 				</div>
-
-
+-->
+					<div>Available Ships:
+						<div class="draggable draggable-ship-wrap" data-field="field_id">
+							<div class="draggable draggable-ship" v-for="ships in nonPlacedShips" :id="'ship_' + ships.slice(0,3)" v-on:mouseover="draggable" v-on:dblclick="rotate">{{ships}}</div>
+						</div>
+					</div>
+				</div>
 				<div class="grid-container">
 					<div class="tableWrap">
 						<h1>Ship Locations</h1>
@@ -67,7 +73,7 @@
 								<td v-for="item in 10" :id="row+item"></td>
 							</tr>
 						</table>
-
+						
 					</div>
 					<div class="tableWrap">
 						<h1>Salvo Hits</h1>
@@ -83,8 +89,8 @@
 							</tr>
 						</table>
 					</div>
-
 				</div>
+				<div class="submit_btn"><button>Submit</button></div>
 			</div>
 		</div>
 	</div>
