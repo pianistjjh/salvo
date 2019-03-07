@@ -40,11 +40,13 @@
 			<div class="section">
 				<div class="section_bg"></div>
 				<div id="shipInfo">
+<!--
 					<div>placed ships:
 						<div class="draggable-ship-wrap">
 							<div class="draggable draggable-ship" v-for="placedShip in placedShips" :id="'ship_' + placedShip.slice(0,3)" data-currentLocation: v-on:mouseover="draggable" v-on:dblclick="rotate">{{placedShip}}</div>
 						</div>
 					</div>
+-->
 					<!--
 					<div>Available Ships:
 						<div class="draggable draggable-ship-wrap" data-field="field_id">
@@ -53,14 +55,15 @@
 					</div>
 				</div>
 -->
-					<div>Available Ships:
+					<div class="availableShips">Available Ships:
 						<div class="draggable draggable-ship-wrap" data-field="field_id">
 							<div class="draggable draggable-ship" v-for="ships in nonPlacedShips" :id="'ship_' + ships.slice(0,3)" v-on:mouseover="draggable" v-on:dblclick="rotate">{{ships}}</div>
 						</div>
 					</div>
 				</div>
 				<div class="grid-container">
-					<div class="tableWrap">
+				<div class="grid-wrap">
+					<div class="tableWrap leftGrid">
 						<h1>Ship Locations</h1>
 						<div class="table_bg"></div>
 						<table class="player" id="droppable">
@@ -75,7 +78,10 @@
 						</table>
 						
 					</div>
-					<div class="tableWrap">
+					<div class="ship_submit_btn" v-if="shipSubmitBtn" v-on:click = "checkToPlaceShip"><button>Submit</button></div>
+					</div>
+					<div class="grid-wrap">
+					<div class="tableWrap rightGrid">
 						<h1>Salvo Hits</h1>
 						<div class="table_bg"></div>
 						<table class="otherPlayer">
@@ -85,20 +91,20 @@
 							</tr>
 							<tr v-for="row in rows">
 								<th>{{row}}</th>
-								<td v-for="item in 10" :id="'salvo'+row+item"></td>
+								<td class = "salvoRange" v-for="(item, index) in 10" :id="'salvo'+row+item" v-on:click="fireSalvo('salvo'+row+item)"></td>
 							</tr>
 						</table>
 					</div>
+					<div class="ship_submit_btn"  v-on:click = "checkToPlaceSalvo" v-if="salvoSubmitBtn"><button>Submit</button></div>
+					</div>
 				</div>
-				<div class="submit_btn"><button>Submit</button></div>
+				
 			</div>
 		</div>
 	</div>
 
 	<script src="https://cdn.jsdelivr.net/npm/vue"></script>
-	<!--	<script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous"></script>-->
 	<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-	<!--  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>-->
 	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 	<script src="./scripts/game.js"></script>
 </body>

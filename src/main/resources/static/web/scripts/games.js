@@ -148,7 +148,6 @@ var app = new Vue({
 						'Accept': 'application/json',
 						'Content-Type': 'application/x-www-form-urlencoded'
 					},
-					//				     body: JSON.stringify([{type: “boat”, location: [“A1”,”A2”,”A2”]}]),
 				})
 				.then(r => {
 					console.log(r);
@@ -166,34 +165,34 @@ var app = new Vue({
 					alert("Fail to join the Game. Try again.");
 				})
 		},
-		placeShip: function () {
-			//			fetch("/api/games/players/" + this.allGame.gamePlayers.player.id + "/ships", {
-			fetch("/api/games/players/16/ships", {
-					credentials: 'include',
-					method: 'POST',
-					headers: {
-						'Accept': 'application/json',
-						'Content-Type': 'application/json'
-					},
-					//					body: JSON.stringify([{
-					//						type: type,
-					//						location: locations
-
-
-					//				}]),
-					body: JSON.stringify([{
-						type: "Destroyer",
-						location: "[“A1”,”A2”,”A2”]"
-								}]),
-					//				body: JSON.stringify([{type: “boat”, location: [“A1”,”A2”,”A2”]}])
-				}).then(r => {
-					console.log(r);
-					return r.json();
-				}).then(json => {
-					console.log(json);
-				})
-				.catch(e => console.log(e))
-		},
+//		placeShip: function () {
+//			//			fetch("/api/games/players/" + this.allGame.gamePlayers.player.id + "/ships", {
+//			fetch("/api/games/players/16/ships", {
+//					credentials: 'include',
+//					method: 'POST',
+//					headers: {
+//						'Accept': 'application/json',
+//						'Content-Type': 'application/json'
+//					},
+//					//					body: JSON.stringify([{
+//					//						type: type,
+//					//						location: locations
+//
+//
+//					//				}]),
+//					body: JSON.stringify([{
+//						type: "Destroyer",
+//						location: "[“A1”,”A2”,”A2”]"
+//								}]),
+//					//				body: JSON.stringify([{type: “boat”, location: [“A1”,”A2”,”A2”]}])
+//				}).then(r => {
+//					console.log(r);
+//					return r.json();
+//				}).then(json => {
+//					console.log(json);
+//				})
+//				.catch(e => console.log(e))
+//		},
 		gameList: function () {
 			var ol = document.getElementById("gameList");
 			for (var i = 0; i < app.allGame.length; i++) {
