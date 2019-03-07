@@ -26,7 +26,7 @@ public class Salvo {
     private GamePlayer gamePlayer;
 
 
-    public Salvo () {
+    public Salvo() {
     }
 
     @JsonIgnore
@@ -59,6 +59,7 @@ public class Salvo {
     public void setLocations(List<String> locations) {
         this.locations = locations;
     }
+
     @JsonIgnore
     public GamePlayer getGamePlayer() {
         return gamePlayer;
@@ -67,8 +68,4 @@ public class Salvo {
     public void setGamePlayer(GamePlayer gamePlayer) {
         this.gamePlayer = gamePlayer;
     }
-
-
-
-
 }

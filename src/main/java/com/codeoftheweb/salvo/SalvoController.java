@@ -155,7 +155,33 @@ public class SalvoController {
 
     }
 
+    @RequestMapping(path = "/games/player/{gamePlayerId}/salvos", method = RequestMethod.POST)
+    public ResponseEntity<Map<String, Object>> getSalvos(@PathVariable Long gamePlayerId,
+                                                        Authentication authentication,
+                                                        @RequestBody List<Salvo> salvoList){
 
+        Player currentUser = playerRepo.findByUserName(authentication.getName());
+        GamePlayer gamePlayer = gamePlayerRepo.findOne(gamePlayerId);
+        Player playerOfTheGamePlayer = gamePlayer.getPlayer();
+        if(currentUser == null) {
+            return new ResponseEntity<>(makeMap("error", "No user found"), HttpStatus.UNAUTHORIZED);
+        } else if (gamePlayer.getPlayer().getUserName() != authentication.getName()) {
+            return new ResponseEntity<>(makeMap("error", "No user found"), HttpStatus.UNAUTHORIZED);
+        } else if (gamePlayer.getShips().size() > 0){
+            return new ResponseEntity<>(makeMap("error", "Ships already placed"), HttpStatus.FORBIDDEN);
+        } else if (currentUser.getId() != playerOfTheGamePlayer.getId()){
+            return new ResponseEntity<>(makeMap("error", "Not your game"), HttpStatus.CONFLICT);
+        } else {
+            salvoList.forEach(salvo -> {
+                gamePlayer.addSalvo(salvo);
+                salvoRepository.save(salvo);
+
+            });
+            return new ResponseEntity<>(makeMap("success", "Salvos located"), HttpStatus.CREATED);
+        }
+
+
+    }
 
     //이 파트는 리스트를 얻는것.
     //여기서 gameplayerrepo쓴거는 gameplayer 누군지 모르니까 gameplayerrepo 중에 하나만 고르기위해.
@@ -187,14 +213,14 @@ public class SalvoController {
                              .stream()
                              .map(ship -> shipDTO(ship))//inside map do something
                              .collect(toList()));
-                     put("salvoes", gamePlayer.getSalvos()
+                     put("salvos", gamePlayer.getSalvos()
                              .stream()
                              .map(salvo -> salvoDTO(salvo))
                              .collect(toList()));
 
                      GamePlayer opponent = getOpponent(gamePlayer);
                      if (opponent != null) {
-                         put("opponent_salvoes", opponent.getSalvos()
+                         put("opponent_salvos", opponent.getSalvos()
                                  .stream()
                                  .map(salvo -> salvoDTO(salvo))
                                  .collect(toList()));
@@ -215,7 +241,7 @@ public class SalvoController {
 //                        .stream()
 //                        .map(ship -> shipDTO(ship))//inside map do something
 //                        .collect(toList()));
-//                map.put("salvoes", gamePlayer.getSalvos()
+//                map.put("salvos", gamePlayer.getSalvos()
 //                        .stream()
 //                        .map(salvo -> salvoDTO(salvo))
 //                        .collect(toList()));

@@ -80,6 +80,10 @@ public class GamePlayer {
     public Set<Salvo> getSalvos() {
         return salvos;
     }
+    public void addSalvo(Salvo salvo) {
+        salvo.setGamePlayer(this);
+        salvos.add(salvo);
+    }
     public void setSalvos(Set<Salvo> salvos) {
         this.salvos = salvos;
     }
