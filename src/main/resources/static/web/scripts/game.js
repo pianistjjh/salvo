@@ -14,7 +14,7 @@ var app = new Vue({
 		nonPlacedShips: [],
 
 		currentDraggingShip: [],
-		allShipLocations: [],
+
 		//		currentLocation: '',
 		shipTarget: '',
 		cellTarget: '',
@@ -49,14 +49,18 @@ var app = new Vue({
 		shipListToBeSent: [],
 
 		object: {},
-		allPositionArray: [],
+		//		allPositionArray: [],
 		shipsAllPlaced: [],
 		shipSubmitBtn: false,
 		salvoSubmitBtn: false,
 		salvoLocation: [{
 			locations: [],
-			turn: "5"
+			turn: 0
 		}],
+		//		allShipLocations: [],
+		//		allSalvoLocations: [],
+		//		allHitLocations: [],
+
 
 	},
 	methods: {
@@ -81,10 +85,15 @@ var app = new Vue({
 					app.addSalvo();
 					app.addOpp_Salvo();
 					app.listShips();
+					//					app.getAllLocations();
 
-					//					console.log(app.nonPlacedShips)
+					var hits = app.allData.user_hits;
+					for (var i = 0; i < hits.length; i++) {
+						hits[i] = "salvo" + hits[i];
+						var ss = document.getElementById(hits[i]);
+						document.getElementById(hits[i]).setAttribute("class", "opp_salvo_hit");
 
-					//				app.styling();
+					}
 
 
 
@@ -150,6 +159,7 @@ var app = new Vue({
 			}
 		},
 		addOpp_Salvo: function () {
+
 			for (var i = 0; i < this.opponentsalvos.length; i++) {
 				var locs = this.opponentsalvos[i].locations;
 				var turn = this.opponentsalvos[i].turn;
@@ -186,6 +196,7 @@ var app = new Vue({
 				.catch(e => console.log(e))
 		},
 		placeSalvo: function () {
+			console.log("Hello")
 			fetch("/api/games/player/" + this.gamePlayerId + "/salvos", {
 					credentials: 'include',
 					method: 'POST',
@@ -359,7 +370,6 @@ var app = new Vue({
 								app.shipList[i].locations = shipPlace;
 							}
 						}
-						//														console.log(shipPlace)
 						console.log(app.shipList[i].locations);
 					}
 				} else {
@@ -448,28 +458,27 @@ var app = new Vue({
 			location.reload();
 		},
 		checkToPlaceSalvo: function () {
-			console.log(app.salvoLocation[0])
-			console.log(app.salvoLocation[0].locations.length)
-			if (app.salvoLocation[0].locations.length == 5) {
+			//			console.log(app.salvoLocation[0])
+			//			console.log(app.salvoLocation[0].locations.length)
 
-				//				app.fireSalvo();
+			if (app.salvoLocation[0].locations.length == 3) {
 				app.placeSalvo();
 				location.reload();
-			} else {
-				alert("You need to select 5 locations to submit!");
-			}
 
+
+				//			console.log(hits)
+			} else {
+				alert("You need to select 3 locations to submit!");
+			}
 		},
 		fireSalvo: function (cellId) {
 
+			app.salvoSubmitBtn = false;
 			var location = cellId.slice(5);
-
-
 			if (!$('#' + cellId).hasClass("salvo")) {
-
 				if (!($('#' + cellId).hasClass("salvoThisTurn"))) {
-					if (app.salvoLocation[0].locations.length >= 5) {
-						alert("You've already placed 5 salvos");
+					if (app.salvoLocation[0].locations.length >= 3) {
+						alert("You've already placed 3 salvos");
 					} else {
 						$('#' + cellId).addClass("salvoThisTurn");
 						app.salvoLocation[0].locations.push(location);
@@ -477,22 +486,47 @@ var app = new Vue({
 				} else {
 					$('#' + cellId).removeClass("salvoThisTurn");
 					let index = app.salvoLocation[0].locations.indexOf(location)
-					app.salvoLocation[0].locations.splice(index,1);
+					app.salvoLocation[0].locations.splice(index, 1);
 				}
 			} else {
 				alert("You cannot fire salvo here!")
 			}
-
-
-			if (app.salvoLocation[0].locations.length == 5) {
+			if (app.salvoLocation[0].locations.length == 3) {
 				app.salvoSubmitBtn = true;
 			} else {
 				app.salvoSubmitBtn = false;
 			}
-			console.log(app.salvoLocation);
-		}
+			//			console.log(app.salvoLocation);
+			//			app.allSalvoLocations = [];
+			//			app.getAllLocations();
 
-
+		},
+		//		getAllLocations: function () {
+		//			//get All Ships locations
+		//			console.log(app.ships)
+		//			if (app.allShipLocations.length != 17) {
+		//				for (var i = 0; i < app.ships.length; i++) {
+		//					for (var j = 0; j < app.ships[i].locations.length; j++) {
+		//						app.allShipLocations.push(app.ships[i].locations[j])
+		//					}
+		//				}
+		//			}
+		//			//get All Salvos locations(salvos shoot by opponent)
+		//			for (var i = 0; i < app.opponentsalvos.length; i++) {
+		//				for (var j = 0; j < app.opponentsalvos[i].locations.length; j++) {
+		//					app.allSalvoLocations.push(app.opponentsalvos[i].locations[j]);
+		//				}
+		//			}
+		//
+		//			//get All hits locations
+		//			app.allHitLocations = app.allShipLocations.filter(function (val) {
+		//				return app.allSalvoLocations.indexOf(val) != -1
+		//			});
+		//
+		//			console.log(app.allSalvoLocations);
+		//			console.log(app.allShipLocations);
+		//			console.log(app.allHitLocations)
+		//		},
 	},
 	created() {
 		this.createGrid();

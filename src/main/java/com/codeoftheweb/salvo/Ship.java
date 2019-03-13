@@ -18,6 +18,9 @@ public class Ship {
 
     private String type;
 
+
+
+
     @ElementCollection
     @Column(name = "location")
     private List<String> locations = new ArrayList<>();
@@ -25,6 +28,7 @@ public class Ship {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "gamePlayer_id")
     private GamePlayer gamePlayer;
+    private boolean sunk;
 
 
     public Ship() {
@@ -34,6 +38,7 @@ public class Ship {
         this.type = type;
         this.locations = locations;
         this.gamePlayer = gamePlayer;
+        this.sunk = false;
     }
 
 
@@ -70,6 +75,13 @@ public class Ship {
         this.gamePlayer = gamePlayer;
     }
 
+    public boolean isSunk() {
+        return sunk;
+    }
+
+    void setSunk(boolean sunk) {
+        this.sunk = sunk;
+    }
 }
 
 
