@@ -11,11 +11,8 @@ var app = new Vue({
 		salvos: [],
 		opponentsalvos: [],
 		placedShips: [],
-		nonPlacedShips: [],
-
+		allShipTypes: [],
 		currentDraggingShip: [],
-
-		//		currentLocation: '',
 		shipTarget: '',
 		cellTarget: '',
 		locationValid: true,
@@ -47,20 +44,20 @@ var app = new Vue({
 			}
 		],
 		shipListToBeSent: [],
-
 		object: {},
-		//		allPositionArray: [],
 		shipsAllPlaced: [],
 		shipSubmitBtn: false,
 		salvoSubmitBtn: false,
 		salvoLocation: [{
 			locations: [],
-			turn: 0
+			turn: ''
 		}],
-		//		allShipLocations: [],
-		//		allSalvoLocations: [],
-		//		allHitLocations: [],
-
+		isMyturn: '',
+		isGameOver: false,
+	},
+	created() {
+		this.createGrid();
+		this.getData();
 
 	},
 	methods: {
@@ -80,22 +77,37 @@ var app = new Vue({
 					app.gamePlayerId = json.gameplayer_id;
 					app.salvos = json.salvos;
 					app.opponentsalvos = json.opponent_salvos;
+					app.isMyturn = app.allData.myTurn;
 
 					app.addShip();
 					app.addSalvo();
 					app.addOpp_Salvo();
 					app.listShips();
-					//					app.getAllLocations();
 
+
+					if (app.allData.myTurn == true) {
+						app.isMyturn = true;
+					} else {
+						app.isMyturn = false;
+					}
 					var hits = app.allData.user_hits;
 					for (var i = 0; i < hits.length; i++) {
 						hits[i] = "salvo" + hits[i];
 						var ss = document.getElementById(hits[i]);
 						document.getElementById(hits[i]).setAttribute("class", "opp_salvo_hit");
-
 					}
-
-
+if(app.allData.gameOver) {
+	app.isGameOver = true;
+}
+					if (app.allData.opponent_sunk_ships.length != 0) {
+						
+						Vue.nextTick()
+						.then(function (){
+							
+							app.isSunk();
+						})	
+					}
+				
 
 				}).catch(function (error) {
 					console.log(error)
@@ -196,6 +208,7 @@ var app = new Vue({
 				.catch(e => console.log(e))
 		},
 		placeSalvo: function () {
+
 			console.log("Hello")
 			fetch("/api/games/player/" + this.gamePlayerId + "/salvos", {
 					credentials: 'include',
@@ -210,6 +223,8 @@ var app = new Vue({
 					),
 				}).then(r => {
 					console.log(r);
+
+
 					return r.json();
 				}).then(json => {
 					console.log(json);
@@ -219,15 +234,18 @@ var app = new Vue({
 		listShips: function () {
 			var newLi = [];
 			for (var i = 0; i < app.ships.length; i++) {
+				
 				app.placedShips.push(app.ships[i].type);
+				app.placedShips.sort();
 			}
 			for (var i = 0; i < app.shipList.length; i++) {
 				newLi.push(app.shipList[i].type);
-				app.nonPlacedShips = newLi.filter(function (val) {
+				app.allShipTypes = newLi.filter(function (val) {
 					return app.placedShips.indexOf(val) == -1;
 				});
+
 			}
-			console.log(newLi)
+
 		},
 		draggable: function (e) {
 			var thisShip = e.target;
@@ -238,16 +256,12 @@ var app = new Vue({
 					app.currentDraggingShip = $(this).html();
 					app.locationValid = true;
 					app.overlappingValid = true;
-
 				},
 				revert: function () {
 					if (!app.locationValid) {
 						app.location();
-
 					}
-
 					return app.locationValid;
-
 				},
 				snap: ".ui-droppable",
 				snapMode: "inner",
@@ -259,13 +273,10 @@ var app = new Vue({
 
 					var cellId = e.target.id;
 					app.cellTarget = cellId;
-
 					//					if (!app.locationValid) {
 					app.location();
 					//					}
-
 					app.range();
-
 				}
 			});
 		},
@@ -458,81 +469,91 @@ var app = new Vue({
 			location.reload();
 		},
 		checkToPlaceSalvo: function () {
-			//			console.log(app.salvoLocation[0])
-			//			console.log(app.salvoLocation[0].locations.length)
-
-			if (app.salvoLocation[0].locations.length == 3) {
+			if (app.salvoLocation[0].locations.length == 5) {
 				app.placeSalvo();
 				location.reload();
-
-
-				//			console.log(hits)
 			} else {
 				alert("You need to select 3 locations to submit!");
 			}
 		},
 		fireSalvo: function (cellId) {
-
-			app.salvoSubmitBtn = false;
-			var location = cellId.slice(5);
-			if (!$('#' + cellId).hasClass("salvo")) {
-				if (!($('#' + cellId).hasClass("salvoThisTurn"))) {
-					if (app.salvoLocation[0].locations.length >= 3) {
-						alert("You've already placed 3 salvos");
+			console.log(app.isMyturn)
+			if (app.isMyturn) {
+				app.salvoSubmitBtn = false;
+				var location = cellId.slice(5);
+				if (!$('#' + cellId).hasClass("salvo")) {
+					if (!($('#' + cellId).hasClass("salvoThisTurn"))) {
+						if (app.salvoLocation[0].locations.length >= 5) {
+							alert("You've already placed 3 salvos");
+						} else {
+							$('#' + cellId).addClass("salvoThisTurn");
+							app.salvoLocation[0].locations.push(location);
+						}
 					} else {
-						$('#' + cellId).addClass("salvoThisTurn");
-						app.salvoLocation[0].locations.push(location);
+						$('#' + cellId).removeClass("salvoThisTurn");
+						let index = app.salvoLocation[0].locations.indexOf(location)
+						app.salvoLocation[0].locations.splice(index, 1);
+					}
+					var countsForTurn = app.allData.salvos.length + 1;
+					if (countsForTurn >= 1) {
+						app.salvoLocation[0].turn = parseInt(countsForTurn);
+
+					} else {
+						app.salvoLocation[0].turn = 1;
 					}
 				} else {
-					$('#' + cellId).removeClass("salvoThisTurn");
-					let index = app.salvoLocation[0].locations.indexOf(location)
-					app.salvoLocation[0].locations.splice(index, 1);
+					alert("You cannot fire salvo here!")
+				}
+				if (app.salvoLocation[0].locations.length == 5) {
+					app.salvoSubmitBtn = true;
+				} else {
+					app.salvoSubmitBtn = false;
 				}
 			} else {
-				alert("You cannot fire salvo here!")
+				alert("It's not your turn. Please wait!")
 			}
-			if (app.salvoLocation[0].locations.length == 3) {
-				app.salvoSubmitBtn = true;
-			} else {
-				app.salvoSubmitBtn = false;
-			}
-			//			console.log(app.salvoLocation);
-			//			app.allSalvoLocations = [];
-			//			app.getAllLocations();
-
 		},
-		//		getAllLocations: function () {
-		//			//get All Ships locations
-		//			console.log(app.ships)
-		//			if (app.allShipLocations.length != 17) {
-		//				for (var i = 0; i < app.ships.length; i++) {
-		//					for (var j = 0; j < app.ships[i].locations.length; j++) {
-		//						app.allShipLocations.push(app.ships[i].locations[j])
-		//					}
-		//				}
-		//			}
-		//			//get All Salvos locations(salvos shoot by opponent)
-		//			for (var i = 0; i < app.opponentsalvos.length; i++) {
-		//				for (var j = 0; j < app.opponentsalvos[i].locations.length; j++) {
-		//					app.allSalvoLocations.push(app.opponentsalvos[i].locations[j]);
-		//				}
-		//			}
-		//
-		//			//get All hits locations
-		//			app.allHitLocations = app.allShipLocations.filter(function (val) {
-		//				return app.allSalvoLocations.indexOf(val) != -1
-		//			});
-		//
-		//			console.log(app.allSalvoLocations);
-		//			console.log(app.allShipLocations);
-		//			console.log(app.allHitLocations)
-		//		},
-	},
-	created() {
-		this.createGrid();
-		this.getData();
+		isSunk: function () {
+			var sunkShip = app.allData.opponent_sunk_ships;
+			var userSunkShip = app.allData.user_sunk_ships;
+			
+			
+			for (var i = 0; i < sunkShip.length; i++) {
 
+				var sunkShipListIdSliced = "r_ship_" + sunkShip[i].type.slice(0, 3);
+				var sunkShipId = document.getElementById(sunkShipListIdSliced);
+				sunkShipId.style.opacity = "0.3";
+			
+				for (var j = 0; j < sunkShip[i].locations.length; j++){
+					var sunkShipLocations = sunkShip[i].locations[j];
+					var sunkShipLocationsId = document.getElementById("salvo" + sunkShipLocations);
+					var sunkShipLocationsUserId = document.getElementById(sunkShipLocations);
+					
+					sunkShipLocationsId.style.background = "#000"
+				
+				}
+			}
+			for (var i = 0; i < userSunkShip.length; i++) {
+
+				var sunkShipListIdSliced = "m_ship_" + userSunkShip[i].type.slice(0, 3);
+				var sunkShipId = document.getElementById(sunkShipListIdSliced);
+				sunkShipId.style.opacity = "0.3";
+				
+			
+				for (var j = 0; j < userSunkShip[i].locations.length; j++){
+					var sunkShipLocations = userSunkShip[i].locations[j];
+					var sunkShipLocationsId = document.getElementById(sunkShipLocations);
+					var sunkShipLocationsUserId = document.getElementById(sunkShipLocations);
+					
+					sunkShipLocationsId.style.background = "#000"
+				}
+			}
+		},
+//		showGameOver: function (){
+//			
+//		}
 
 	},
+	
 
 })

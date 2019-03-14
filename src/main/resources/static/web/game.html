@@ -15,6 +15,16 @@
 <body>
 	<div id="app">
 		<div class="bg"></div>
+		<div v-bind:class="{gameOver : isGameOver}">
+			<div class="gameOverBg"></div>
+			<div class="popUp">
+				<div class="popTop">GAME OVER</div>
+				<div class="popMid">YOU WON/YOU LOSE</div>
+				<div class="popBot">Go Back to Main Page</div>
+				
+				
+			</div>
+		</div>
 		<div class="wrap">
 			<div class="topNav">
 				<div class="topNav-bg-opacity"></div>
@@ -40,24 +50,21 @@
 			<div class="section">
 				<div class="section_bg"></div>
 				<div id="shipInfo">
-<!--
-					<div>placed ships:
+					<div>Opponent's Ship
 						<div class="draggable-ship-wrap">
-							<div class="draggable draggable-ship" v-for="placedShip in placedShips" :id="'ship_' + placedShip.slice(0,3)" data-currentLocation: v-on:mouseover="draggable" v-on:dblclick="rotate">{{placedShip}}</div>
+							<div class="draggable-ship" v-for="placedShip in placedShips" :id="'r_ship_' + placedShip.slice(0,3)" >{{placedShip}}</div>
 						</div>
 					</div>
--->
-					<!--
-					<div>Available Ships:
-						<div class="draggable draggable-ship-wrap" data-field="field_id">
-<div class="draggable-ship" v-for="(ship, index) of nonPlacedShips" :id="'ship_' + ship.slice(0,3)" v-on:mouseover="draggable" v-on:dblclick="rotate(index)" v-bind:class="{rotate: index == field_id}" v-bind:data-value = "index">{{ship}}</div>
+					
+					<div class="draggable-ship-wrap">Your Ship
+						<div class="draggable-ship-wrap">
+							<div class="draggable-ship" v-for="placedShip in placedShips" :id="'m_ship_' + placedShip.slice(0,3)" >{{placedShip}}</div>
 						</div>
 					</div>
-				</div>
--->
+
 					<div class="availableShips">Available Ships:
 						<div class="draggable draggable-ship-wrap" data-field="field_id">
-							<div class="draggable draggable-ship" v-for="ships in nonPlacedShips" :id="'ship_' + ships.slice(0,3)" v-on:mouseover="draggable" v-on:dblclick="rotate">{{ships}}</div>
+							<div class="draggable draggable-ship" v-for="ships in allShipTypes" :id="'ship_' + ships.slice(0,3)" v-on:mouseover="draggable" v-on:dblclick="rotate">{{ships}}</div>
 						</div>
 					</div>
 				</div>
