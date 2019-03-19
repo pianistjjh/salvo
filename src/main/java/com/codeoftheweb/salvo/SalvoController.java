@@ -320,18 +320,20 @@ put("score", calcScore(gamePlayer));
 
     private Double calcScore(GamePlayer gamePlayer) {
         Double score = null;
-        if(finalSunkShip(gamePlayer).size() == 5) {
-            scoreRepository.save(new Score(gamePlayer.getGame(), gamePlayer.getPlayer(),0.0 ));
+        if (isGameOver(gamePlayer)) {
+            if (finalSunkShip(gamePlayer).size() == 5 && finalSunkShip(getOpponent(gamePlayer)).size() != 5) {
+                scoreRepository.save(new Score(gamePlayer.getGame(), gamePlayer.getPlayer(), 0.0));
 
-            score = 0.0;
-        }
-        if(finalSunkShip(getOpponent(gamePlayer)).size() == 5) {
-            scoreRepository.save(new Score(gamePlayer.getGame(), gamePlayer.getPlayer(), 1.0));
-            score = 1.0;
-        }
-        if(finalSunkShip(gamePlayer).size() == finalSunkShip(getOpponent(gamePlayer)).size()) {
-            scoreRepository.save(new Score(gamePlayer.getGame(), gamePlayer.getPlayer(), 0.5));
-            score = 0.5;
+                score = 0.0;
+            }
+            if (finalSunkShip(getOpponent(gamePlayer)).size() == 5 && finalSunkShip(gamePlayer).size() != 5) {
+                scoreRepository.save(new Score(gamePlayer.getGame(), gamePlayer.getPlayer(), 1.0));
+                score = 1.0;
+            }
+            if (finalSunkShip(getOpponent(gamePlayer)).size() == 5 && finalSunkShip(gamePlayer).size() == finalSunkShip(getOpponent(gamePlayer)).size()) {
+                scoreRepository.save(new Score(gamePlayer.getGame(), gamePlayer.getPlayer(), 0.5));
+                score = 0.5;
+            }
         }
     return score;
     }

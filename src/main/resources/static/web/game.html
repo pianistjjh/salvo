@@ -15,15 +15,16 @@
 <body>
 	<div id="app">
 		<div class="bg"></div>
-		<div v-bind:class="{gameOver : isGameOver}">
+		<div v-bind:class="{gameOverTrue : isGameOver}" class="gameOver">
 			<div class="gameOverBg"></div>
 			<div class="popUp">
 				<div class="popTop">GAME OVER</div>
 				<div class="popMid">YOU WON/YOU LOSE</div>
 				<div class="popBot">Go Back to Main Page</div>
-				
-				
 			</div>
+		</div>
+		<div class="gameAlertBox">
+			
 		</div>
 		<div class="wrap">
 			<div class="topNav">
@@ -49,63 +50,69 @@
 
 			<div class="section">
 				<div class="section_bg"></div>
-				<div id="shipInfo">
-					<div>Opponent's Ship
-						<div class="draggable-ship-wrap">
-							<div class="draggable-ship" v-for="placedShip in placedShips" :id="'r_ship_' + placedShip.slice(0,3)" >{{placedShip}}</div>
+
+				<div class="grid-container">
+					<div class="grid-wrap">
+						<div class="tableWrap leftGrid">
+							<h1>Ship Locations</h1>
+							<div class="table_bg"></div>
+							<table class="player" id="droppable">
+								<tr>
+									<th></th>
+									<th v-for="column in columns">{{column}}</th>
+								</tr>
+								<tr v-for="row in rows">
+									<th>{{row}}</th>
+									<td v-for="item in 10" :id="row+item"></td>
+								</tr>
+							</table>
+
 						</div>
+						<div class="ship_submit_btn" v-if="shipSubmitBtn" v-on:click="checkToPlaceShip">Submit</div>
 					</div>
-					
-					<div class="draggable-ship-wrap">Your Ship
-						<div class="draggable-ship-wrap">
-							<div class="draggable-ship" v-for="placedShip in placedShips" :id="'m_ship_' + placedShip.slice(0,3)" >{{placedShip}}</div>
+
+
+
+					<div id="shipInfo">
+						<div class="smallShips">Your Ship
+							<div class="draggable-ship-wrap">
+								<div class="draggable-ship" v-for="placedShip in placedShips" :id="'m_ship_' + placedShip.slice(0,3)">{{placedShip}}</div>
+							</div>
+						</div>
+						<div class="smallShips">Opponent's Ship
+							<div class="draggable-ship-wrap">
+								<div class="draggable-ship" v-for="placedShip in placedShips" :id="'r_ship_' + placedShip.slice(0,3)">{{placedShip}}</div>
+							</div>
+						</div>
+
+						<div class="availableShips">Available Ships:
+							<div class="draggable draggable-ship-wrap" data-field="field_id">
+								<div class="draggable draggable-ship" v-for="ships in allShipTypes" :id="'ship_' + ships.slice(0,3)" v-on:mouseover="draggable" v-on:dblclick="rotate">{{ships}}</div>
+							</div>
 						</div>
 					</div>
 
-					<div class="availableShips">Available Ships:
-						<div class="draggable draggable-ship-wrap" data-field="field_id">
-							<div class="draggable draggable-ship" v-for="ships in allShipTypes" :id="'ship_' + ships.slice(0,3)" v-on:mouseover="draggable" v-on:dblclick="rotate">{{ships}}</div>
-						</div>
-					</div>
-				</div>
-				<div class="grid-container">
-				<div class="grid-wrap">
-					<div class="tableWrap leftGrid">
-						<h1>Ship Locations</h1>
-						<div class="table_bg"></div>
-						<table class="player" id="droppable">
-							<tr>
-								<th></th>
-								<th v-for="column in columns">{{column}}</th>
-							</tr>
-							<tr v-for="row in rows">
-								<th>{{row}}</th>
-								<td v-for="item in 10" :id="row+item"></td>
-							</tr>
-						</table>
-						
-					</div>
-					<div class="ship_submit_btn" v-if="shipSubmitBtn" v-on:click = "checkToPlaceShip">Submit</div>
-					</div>
+
+
 					<div class="grid-wrap">
-					<div class="tableWrap rightGrid">
-						<h1>Salvo Hits</h1>
-						<div class="table_bg"></div>
-						<table class="otherPlayer">
-							<tr>
-								<th></th>
-								<th v-for="column in columns">{{column}}</th>
-							</tr>
-							<tr v-for="row in rows">
-								<th>{{row}}</th>
-								<td class = "salvoRange" v-for="(item, index) in 10" :id="'salvo'+row+item" v-on:click="fireSalvo('salvo'+row+item)"></td>
-							</tr>
-						</table>
-					</div>
-					<div class="salvo_submit_btn" v-if="salvoSubmitBtn" v-on:click = "checkToPlaceSalvo">Submit</div>
+						<div class="tableWrap rightGrid">
+							<h1>Salvo Hits</h1>
+							<div class="table_bg"></div>
+							<table class="otherPlayer">
+								<tr>
+									<th></th>
+									<th v-for="column in columns">{{column}}</th>
+								</tr>
+								<tr v-for="row in rows">
+									<th>{{row}}</th>
+									<td class="salvoRange" v-for="(item, index) in 10" :id="'salvo'+row+item" v-on:click="fireSalvo('salvo'+row+item)"></td>
+								</tr>
+							</table>
+						</div>
+						<div class="salvo_submit_btn" v-if="salvoSubmitBtn" v-on:click="checkToPlaceSalvo">Submit</div>
 					</div>
 				</div>
-				
+
 			</div>
 		</div>
 	</div>

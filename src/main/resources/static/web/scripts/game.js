@@ -96,18 +96,38 @@ var app = new Vue({
 						var ss = document.getElementById(hits[i]);
 						document.getElementById(hits[i]).setAttribute("class", "opp_salvo_hit");
 					}
-if(app.allData.gameOver) {
-	app.isGameOver = true;
-}
-					if (app.allData.opponent_sunk_ships.length != 0) {
-						
-						Vue.nextTick()
-						.then(function (){
-							
-							app.isSunk();
-						})	
+					if (app.allData.gameOver) {
+						app.isGameOver = true;
 					}
-				
+					if (app.allData.opponent_sunk_ships.length != 0) {
+
+						Vue.nextTick()
+							.then(function () {
+
+								app.isSunk();
+							})
+					}
+				if(!app.isMyturn)
+					setTimeout(app.refreshing(), 2000)
+
+				}).catch(function (error) {
+					console.log(error)
+				});
+		},
+		refreshing: function () {
+			fetch("/api/game_view/" + this.paramObj(location.search), {
+					method: "GET"
+				})
+				.then(function (response) {
+					return response.json();
+				})
+				.then(function (json) {
+					console.log(json);
+					app.allData = json;
+					console.log("refreshed")
+
+//if(!app.isMyturn)
+//					setTimeout(app.refreshing(), 10000)
 
 				}).catch(function (error) {
 					console.log(error)
@@ -234,7 +254,7 @@ if(app.allData.gameOver) {
 		listShips: function () {
 			var newLi = [];
 			for (var i = 0; i < app.ships.length; i++) {
-				
+
 				app.placedShips.push(app.ships[i].type);
 				app.placedShips.sort();
 			}
@@ -473,7 +493,7 @@ if(app.allData.gameOver) {
 				app.placeSalvo();
 				location.reload();
 			} else {
-				alert("You need to select 3 locations to submit!");
+				alert("You need to select 5 locations to submit!");
 			}
 		},
 		fireSalvo: function (cellId) {
@@ -516,21 +536,21 @@ if(app.allData.gameOver) {
 		isSunk: function () {
 			var sunkShip = app.allData.opponent_sunk_ships;
 			var userSunkShip = app.allData.user_sunk_ships;
-			
-			
+
+
 			for (var i = 0; i < sunkShip.length; i++) {
 
 				var sunkShipListIdSliced = "r_ship_" + sunkShip[i].type.slice(0, 3);
 				var sunkShipId = document.getElementById(sunkShipListIdSliced);
 				sunkShipId.style.opacity = "0.3";
-			
-				for (var j = 0; j < sunkShip[i].locations.length; j++){
+
+				for (var j = 0; j < sunkShip[i].locations.length; j++) {
 					var sunkShipLocations = sunkShip[i].locations[j];
 					var sunkShipLocationsId = document.getElementById("salvo" + sunkShipLocations);
 					var sunkShipLocationsUserId = document.getElementById(sunkShipLocations);
-					
+
 					sunkShipLocationsId.style.background = "#000"
-				
+
 				}
 			}
 			for (var i = 0; i < userSunkShip.length; i++) {
@@ -538,22 +558,20 @@ if(app.allData.gameOver) {
 				var sunkShipListIdSliced = "m_ship_" + userSunkShip[i].type.slice(0, 3);
 				var sunkShipId = document.getElementById(sunkShipListIdSliced);
 				sunkShipId.style.opacity = "0.3";
-				
-			
-				for (var j = 0; j < userSunkShip[i].locations.length; j++){
+
+
+				for (var j = 0; j < userSunkShip[i].locations.length; j++) {
 					var sunkShipLocations = userSunkShip[i].locations[j];
 					var sunkShipLocationsId = document.getElementById(sunkShipLocations);
 					var sunkShipLocationsUserId = document.getElementById(sunkShipLocations);
-					
+
 					sunkShipLocationsId.style.background = "#000"
 				}
 			}
 		},
-//		showGameOver: function (){
-//			
-//		}
 
 	},
 	
+
 
 })
